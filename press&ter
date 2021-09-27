@@ -1,0 +1,31 @@
+import paramiko
+import sys
+
+def remote_host():
+    varHost = input("IP Address/FQDN : ")
+    varPort = (int(input("Port(1-65535) : ")))
+    varUser = input("Username : ")
+    varPass = input("Password : ")
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    print("Connected to Host")
+    ssh.connect(varHost, varPort, varUser, varPass)
+    while True:
+        try:
+            command = input("Execute Command : ")
+            stdin, stdout, stderr = ssh.exec_command(command)
+            lines = stdout.read()
+            print("===Begin===\n")
+            sys.stdout.buffer.write(lines)
+
+        except:
+            print("Something Went Wrong")
+        else:
+            varInex = input("\n===End===\n Press 1 to SSH other host \n Press any key to run other command \n Press q and Enter to exit\n:")
+            if varInex == "1":
+                remote_host()
+            elif varInex == "q":
+                break
+            else:
+                continue
+remote_host()
